@@ -1,0 +1,33 @@
+{
+  "name": "vidly",
+  "version": "1.0.0",
+  "description": "vidy api",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mg4u/vidly.git"
+  },
+  "keywords": [
+    "NodeJs",
+    "React",
+    "Express",
+    "Vidly",
+    "REST",
+    "API"
+  ],
+  "author": "Mahmoud Gamal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mg4u/vidly/issues"
+  },
+  "homepage": "https://github.com/mg4u/vidly#readme",
+  "devDependencies": {
+    "chai": "^4.2.0"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
