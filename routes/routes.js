@@ -1,16 +1,23 @@
 // require express
 var express = require('express');
 var path    = require('path');
+var UsersModel = require('../src/api/models/Users');
+var UsersController = require('../src/api/controllers/Users');
 
 // create our router object
 var router = express.Router();
 
 // route for our homepage
 router.get('/', function(req, res) {
+  // UsersModel.fill()
   // res.render('pages/home');
-  res.send(req.query)
+  res.send(UsersModel.list())
   // res.send(req.params)
+  // res.send(req.query)
 });
+
+router.post('/register',UsersController.Insert.bind(UsersController))
+
 
 // route for our about page
 router.get('/about', function(req, res) {
