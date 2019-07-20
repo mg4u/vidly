@@ -21,7 +21,6 @@ class Users{
 		let salt = crypto.randomBytes(16).toString('base64');
 		let hash = this.hashWord(originalPassword,salt)
 		req.body.password = salt + "$" + hash;
-		req.body.salt = salt;
 		req.body.permissionLevel = 1;
 
 		//check name or email is not exists
