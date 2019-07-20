@@ -1,10 +1,17 @@
 // src/api/users
+const fs = require('fs');
+const {UsersDBFile}=require('../configs/Config')
 
 function Users () {
 	this.users=[]
+	const dataInDB= getUsersFromDB()
+	if(dataInDB){
+		this.users=JSON.parse(dataInDB)
+	}
 }
 
 Users.prototype.addUser = function(user) {
+	insertIntoDB(user)
 	return this.users.push(user)
 };
 
@@ -48,7 +55,47 @@ Users.prototype.fill = function() {
 	    { name: 'Ado', email: 'Ado@scotch.io', avatar: 'http://placekitten.com/500/500'},
 	    { name: 'Samantha', email: 'Samantha@scotch.io', avatar: 'http://placekitten.com/700/700'}
 	];
+
 	this.users=this.users.concat(usersData)
+	// this.users.map((row)=>{
+		insertIntoDB(this.users)
+	// })
+	// return;
+	let {users} =this
 	// console.warn(this.users)
 };
 module.exports= new Users
+
+
+function insertIntoDB (row) {
+	// console.warn('user',row)
+	let user=row.constructor=='Array'?row:[row]
+	console.warn((row.constructor==Array),'user',user)
+	fs.readFile(UsersDBFile, 'utf8', function readFileCallback(err, data){
+	    if (err){
+	        console.log(err);
+			fs.writeFile(UsersDBFile, JSON.stringify(user), 'utf8', ()=>{});
+	    } else {
+	        // console.log('data',data,user);
+	        if(!data){
+	        	fs.writeFile(UsersDBFile, JSON.stringify(user), 'utf8', ()=>{});
+	    		return
+	        }
+
+		    let obj = JSON.parse(data); //now it an object
+		    obj=obj.concat(user); //add some data
+		    console.log('obj',obj)
+		    data = JSON.stringify(obj); //convert it back to data
+		    fs.writeFile(UsersDBFile, data, 'utf8', ()=>{}); // write it back 
+		}
+	});
+}
+
+function getUsersFromDB () {
+	let dataInDB=fs.readFileSync(UsersDBFile, 'utf8', function readFileCallback(err, data){
+		console.log('data reads')
+		return data
+	});
+	return dataInDB
+	console.log('dataInDB',dataInDB)
+}
