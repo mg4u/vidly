@@ -9,7 +9,7 @@ const {SECRET_KEY}=require('../configs/Config')
 class Users{
 	constructor(){
 		// UsersModel.fill()
-		console.warn('SECRET_KEY',SECRET_KEY)
+		// console.warn('SECRET_KEY',SECRET_KEY)
 	}
 
 	Insert (req, res){
