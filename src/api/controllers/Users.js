@@ -4,7 +4,7 @@ const UsersModel = require('../models/Users');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const {SECRET_KEY}=require('../configs/Config')
-
+const {HashWord}=require('../helpers/hashword')
 
 class Users{
 	constructor(){
@@ -22,7 +22,7 @@ class Users{
 
 		// Hash Passowrd
 		let salt = crypto.randomBytes(16).toString('base64');
-		let hash = this.hashWord(originalPassword,salt)
+		let hash = HashWord(originalPassword,salt)
 		req.body.password = salt + "$" + hash;
 		req.body.permissionLevel = 1;
 
@@ -40,34 +40,39 @@ class Users{
 		//Login check Login
 		//create token to login
 		const token = jwt.sign( { user: lastUser}, SECRET_KEY, {expiresIn: 3600000} );
-		let decodedUser={}
-		jwt.verify( token, SECRET_KEY, ( err, decoded ) => {
-		    if ( err ) {
-		      // 401 Unauthorized -- 'Incorrect token'
-		      res.status(400).send({err})
-		    }
-		    decodedUser = decoded.user;
-
-		});
-
-		res.send({message:'Data Saved',data:{...lastUser,token,decodedUser}});
+		res.send({message:'Data Saved',data:{...lastUser,token}});
 	}
 
-	hashWord(word,salt){
-		//return crypto.createHmac('sha512',salt).update(word).digest("hex");
-		return crypto.createHmac('md5',salt).update(word).digest("base64");
-		// return crypto.createHmac('md5',salt).update(word).digest("hex");
-		// return crypto.MD5(word);
+	//
+
+	Login (req, res){
+		const {email,password:originalPassword}=req.body
+		//check mondatary data is submitted
+		if(!email||!originalPassword){
+			res.status(400).send({error:'empty data'})
+		}
+		//check email is exists
+		let checkData=UsersModel.checkData({email})
+
+		if(!checkData.length){
+			res.status(400).send({error:'Email not exists'})
+		}
+		const data=checkData[0]
+		//check Password
+		//create pasword
+		const salt=data.password.split('$')[0]
+		const password=data.password.split('$')[1]
+		const hashedPassword=HashWord(originalPassword,salt)
+		//comapre
+		if(password!=hashedPassword){
+			res.status(400).send({error:'wrond password'})
+		}
+		//create token to login
+		const token = jwt.sign( { user: data}, SECRET_KEY, {expiresIn: 3600000} );
+		// res.status(200).send({hashedPassword,password})
+		res.send({message:'logged In success',data:{...data,token}});
 	}
 
-	checkHashWord(word){
-		const wordParts=word.split('$')
-		const salt=wordParts[0]
-
-		//return crypto.createHmac('sha512',salt).update(word).digest("hex");
-		return crypto.createHmac('md5',salt).update(word).digest("base64");
-		// return crypto.createHmac('md5',salt).update(word).digest("hex");
-		// return crypto.MD5(word);
-	}
 }
+
 module.exports= new Users

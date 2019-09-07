@@ -42,7 +42,7 @@ Users.prototype.checkData = function(user) {
 	// console.warn(user,this.users)
 	const nameExist=this.users.filter((row)=>{
 		// console.warn('row',row)
-		return (row.name==user.name||row.email==user.email)
+		return ( (name && row.name==name) || (email && row.email==email) )
 	})
 	// console.warn('nameExist',nameExist)
 	return nameExist
@@ -97,5 +97,4 @@ function getUsersFromDB () {
 		return data
 	});
 	return dataInDB
-	console.log('dataInDB',dataInDB)
 }

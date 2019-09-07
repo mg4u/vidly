@@ -1,14 +1,15 @@
 // require express
-var express = require('express');
-var path    = require('path');
-var UsersModel = require('../src/api/models/Users');
-var UsersController = require('../src/api/controllers/Users');
+const express = require('express');
+const path    = require('path');
+const UsersModel = require('../src/api/models/Users');
+const UsersController = require('../src/api/controllers/Users');
+const {VerifyToken} = require('../src/api/middlewares/Auth');
 
 // create our router object
-var router = express.Router();
+const router = express.Router();
 
 // route for our homepage
-router.get('/', function(req, res) {
+router.get('/',VerifyToken, function(req, res) {
   // UsersModel.fill()
   // res.render('pages/home');
   res.send(UsersModel.list())
@@ -17,10 +18,11 @@ router.get('/', function(req, res) {
 });
 
 router.post('/register',UsersController.Insert.bind(UsersController))
+router.post('/login',UsersController.Login.bind(UsersController))
 
 
 // route for our about page
-router.get('/about', function(req, res) {
+router.get('/about',VerifyToken, function(req, res) {
   var users = [
     { name: 'Holly', email: 'holly@scotch.io', avatar: 'http://placekitten.com/300/300'},
     { name: 'Holly', email: 'holly@scotch.io', avatar: 'http://placekitten.com/300/300'},
