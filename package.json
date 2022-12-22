@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "express": "^4.17.1",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "mysql2": "^1.7.0",
     "save": "^2.4.0",
     "sequelize": "^5.18.2"
